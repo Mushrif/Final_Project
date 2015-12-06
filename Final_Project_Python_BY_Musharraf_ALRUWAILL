@@ -1,0 +1,402 @@
+#!/usr/bin/env python3
+import os
+import sqlite3
+import pprint
+import random
+
+filename = 'C:\sqlite\Mush_db.db'
+conn = sqlite3.connect(filename)
+
+class functions:
+        # to control all functions functionlaity
+        def _init_(self):
+                pass
+        
+        def delete_Fun(self):
+                num_of_func = input("How many functions do you want to write ? ")
+                num_of_func = int(num_of_func)
+                # Getting the question requirment
+                for i in range (0,num_of_func):
+                        print ("This is a secure access.")
+                        Fname = input("Write the functions that you want to delete : ")
+                        query = "DELETE FROM Functions WHERE NAME ='%s';" % (Fname)
+                        conn.execute(query) # implements the query
+                        conn.commit()
+        
+        def add_function(self):
+                IDS = 0
+                first_time = False
+                # Getting the last ID for Questions table
+                for row in conn.execute('SELECT * FROM Functions'):
+                        IDS = row[0]
+                if (IDS ==0  or IDS == None): # set 1 if it's the first time
+                        IDS = 1
+                        first_time = True
+# Ask how many question to insert
+                num_of_fun = input("How many Function do you want to add ? ")
+                num_of_fun = int(num_of_fun)
+                # Getting the question requirment
+                for i in range (0,num_of_fun):
+# knwoing if it's first time or not
+                        if (first_time == True):
+                                IDS = 1
+                                first_time = False
+                        else:
+                                IDS = IDS + 1
+                        inserting_list = []
+                        Qs = input("Write the name of function : ")
+                        inserting_list.append(Qs)
+                        Qs = input("Write the description : ")
+                        inserting_list.append(Qs)
+                        Qs = input("Write the example : ")
+                        inserting_list.append(Qs)
+                        Qs = input("Write a note : ")
+                        inserting_list.append(Qs)
+                        Qs = input("Write its library : ")
+                        inserting_list.append(Qs)
+                        print (IDS , "      " , Qs)
+                        query = "INSERT INTO Functions (F_ID, NAME, Description, Example, Mynote, Use_library) VALUES (%i, '%s', '%s', '%s', '%s', '%s') " % (IDS, inserting_list[0],inserting_list[1],inserting_list[2],inserting_list[3],inserting_list[4])
+                        conn.execute(query) # implements the query
+                        conn.commit()
+                        
+        def Seraching(self):
+                list_Users = []
+                looking = input("What fucntions you like to look for  ?   ")
+                query = "SELECT * FROM Functions WHERE NAME = '%s';" % (looking)
+
+                for row in conn.execute(query):
+                        list_Users.append(row)
+                len_of_list = len(list_Users)      
+                if (list_Users == None):
+                        print ("The function that you are looking for is not found ... ")
+                elif (len(list_Users) > 0):
+                        print ("\tThe function ID is : \t", list_Users[0][0])
+                        print ("\tThe function Name is : \t", list_Users[0][1])
+                        print ("\tThe function Description is : \t", list_Users[0][2])
+                        print ("\tThe function Example is : \t", list_Users[0][3])
+                        print ("\tThe function Note is : \t", list_Users[0][4])
+                        print ("\tThe function Use Library : \t", list_Users[0][5])
+           
+class User: # to have control over all users
+        filename = 'C:\sqlite\Mush_db.db'
+        conn = sqlite3.connect(filename)
+        def _init_(self):
+                pass
+        
+        def Change_Password(self,UID):
+                Upassword = input(" Write you new password : ")
+                query = "UPDATE Users SET Password = '%s' WHERE U_ID = '%s';" % (Upassword,UID)
+                conn.execute(query) # implements the query
+                conn.commit()
+                
+        def privilege(self):
+                print ("\n\t\tThis is Secure Access\n")
+                Uname = input("Write the user name that you want to alter his/her privilege : ")
+                Utype = input("Write the  privilege  (Admin/User) : ")
+                query = "UPDATE Users SET U_type = '%s' WHERE User_name = '%s';" % (Utype,Uname)
+                conn.execute(query) # implements the query
+                conn.commit()
+                
+        def delete_user(self):
+                print ("\n\t\tThis is Secure Access\n")
+                Uname = input("Write the user name that you want to delete : ")
+                query = "DELETE FROM Users WHERE User_name ='%s';" % (Uname)
+                conn.execute(query) # implements the query
+                conn.commit()
+                
+        def Add_User(self):
+                IDS = 0
+                first_time = False
+                # Getting the last ID for Questions table
+                for row in conn.execute('SELECT * FROM Users'):
+                        IDS = row[0]
+                if (IDS ==0  or IDS == None): # set 1 if it's the first time
+                        IDS = 1
+                        first_time = True
+# Ask how many question to insert
+                num_of_users = input("How many User do you want to add ? ")
+                num_of_users = int(num_of_users)
+                # Getting the question requirment
+                for i in range (0,num_of_users):
+# knwoing if it's first time or not
+                        if (first_time == True):
+                                IDS = 1
+                                first_time = False
+                        else:
+                                IDS = IDS + 1
+                                
+                        print ("This is the User number %i." % (i+1))
+                        inserting_list = []
+                        Qs = input("Write the user name : ")
+                        inserting_list.append(Qs)
+                        Qs = input("Write the First name : ")
+                        inserting_list.append(Qs)
+                        Qs = input("Write the Last name : ")
+                        inserting_list.append(Qs)
+                        Qs = input("Write the Email : ")
+                        inserting_list.append(Qs)
+                        Qs = input("Write the paswword : ")
+                        inserting_list.append(Qs)
+                        Qs = input("Write the profile : ")
+                        inserting_list.append(Qs)
+                        Qs = input("Write the user type (Admin/User) : ")
+                        inserting_list.append(Qs)
+                        query = "INSERT INTO Users (U_ID, User_name, F_name, L_name, Email, Password, profile, U_type) VALUES (%i, '%s', '%s', '%s', '%s', '%s', '%s','%s')" % (IDS, inserting_list[0],inserting_list[1],inserting_list[2],inserting_list[3],inserting_list[4],inserting_list[5],inserting_list[6])
+                        conn.execute(query) # implements the query
+                        conn.commit()
+        
+        def Access(self):               
+# Listing users info
+                list_Users = []
+                for row in conn.execute('SELECT * FROM Users'):
+                        list_Users.append(row)
+                User_info = {}
+                User_info['User_name'] = ''
+                User_info['Password'] = ''
+                User_info['Name'] = ''
+                User_info['ID'] = ''
+                User_info['Type'] = ''
+                not_found = True
+                count = 0 
+# Getting User name and password input
+                while (not_found == True):
+                        count = count + 1
+                        User_name = input("Enter the user name:  ")
+                        Password = input("Enter the the password:  ")
+# Ensuring the user input and assign the info to User_info Dictionary
+                        for Record in list_Users:
+                                if(User_name == Record[1]) and (Password == Record[5]):
+                                        print ("\n\t\tYou have been successfully logged in.")
+                                        User_info['User_name'] = User_name
+                                        User_info['Password'] = Password
+                                        User_info['ID'] = Record[0]
+                                        User_info['Name'] = Record[2] + " " + Record[3]
+                                        if(Record[7] == 1): # Know if admin or not
+                                                User_info['Type'] = "Admin"
+                                        else:
+                                                User_info['Type'] = "User"
+                                        not_found = False
+                                        return (User_info)
+                        if (not_found ==  True):
+                                print ("\n\t\t It's wrong password or user name. \n")
+                                print (" That was the ", count , " attempts.")
+                                not_found = True
+                                
+                                        
+                                        
+                        
+                
+                
+class question:
+        filename = 'C:\sqlite\Mush_db.db'
+        conn = sqlite3.connect(filename)
+        
+        def _init_(self):
+                pass
+                        
+        def quiz(self):
+                IDS = 0
+                first_time = False
+                # Getting the last ID for Questions table
+                count = 0
+                for row in conn.execute('SELECT * FROM Questions'):
+                        IDS = row[0]
+                        count = count + 1
+                if (IDS ==0  or IDS == None):
+                        print ("There is no question to do quiz .. sorry ")
+                        
+                xlist = []
+                while(1):
+                        Q_count = input ("How many question do you like to quiz your self :  ")
+                        Q_count = int(Q_count)
+                        xlist = []
+                        if(Q_count > count ):
+                                print ("Sorry , we just have %s number of questions " % (count))
+                                
+                        else:
+                                break
+
+                xlist = []        
+                while(True):
+                        
+                        x = random.randrange(1,(count+1))
+                        if x not in xlist:
+                                xlist.append(x)
+                        if (len(xlist) == Q_count):
+                                break
+                        
+                print ("lets play now ^_^ .... ")
+                
+                right_answer = 0
+                for x in xlist:
+                        x = int(x)
+                        query = ("SELECT * FROM Questions WHERE Q_ID = %i " % (x))
+                        for row in conn.execute(query):
+                                print ("\t",row[1])
+                                print ("\t\t1- ",row[2])
+                                print ("\t\t2- ",row[3])
+                                print ("\t\t3- ",row[4])
+                                print ("\t\t4- ",row[5])
+                                ans = input("Enter the number of the answer (1/2/3/4)  : ")
+                                RA = int(row[6])
+                                if (RA == int(ans)):
+                                        print ("You got it right !!")
+                                        right_answer = right_answer + 1
+                                else:
+                                        print  ("Oh, it's wrong, sorry !!")
+                                        print ("the right answer is ", RA )
+                print ("The number of correct answer you got is : " , right_answer)
+                print ("it's a " , (((right_answer / Q_count) * 100)) , "% .")
+        
+        def delete_Question(self):
+                num_of_QU = input("How many Question do you want to delete ? ")
+                num_of_QU = int(num_of_QU)
+                # Getting the question requirment
+                for i in range (0,num_of_QU):
+                        print ("\n\t\tThis is Secure Access\n")
+                        Ids = input("Write the ID of Question that you want to delete : ")
+                        query = "DELETE FROM Questions WHERE Q_ID ='%s';" % (Ids)
+                        conn.execute(query) # implements the query
+                        conn.commit()
+                        
+        def Add_Question(self):
+                print ("\n\t\tThis is Secure Access\n")
+                # initiat the ID variable
+                IDS = 0
+                first_time = False
+                # Getting the last ID for Questions table
+                for row in conn.execute('SELECT * FROM Questions'):
+                        IDS = row[0]
+                if (IDS ==0  or IDS == None): # set 1 if it's the first time
+                        IDS = 1
+                        first_time = True
+                # Ask how many question to insert
+                num_of_question = input("How many question do you want to write ? ")
+                num_of_question = int(num_of_question)
+                # Getting the question requirment
+                for i in range (0,num_of_question):
+                        # knwoing if it's first time or not
+                        if (first_time == True):
+                                IDS = 1
+                                first_time = False
+                        else:
+                                IDS = IDS + 1
+                                print (IDS)
+                        print ("This is the Question number %i." % (i+1))
+                        inserting_list = []
+                        Qs = input("Write the Questions : ")
+                        inserting_list.append(Qs)
+                        Qs = input("Write the first Answer : ")
+                        inserting_list.append(Qs)
+                        Qs = input("Write the Second Answer : ")
+                        inserting_list.append(Qs)
+                        Qs = input("Write the Third Answer : ")
+                        inserting_list.append(Qs)
+                        Qs = input("Write the fourth Answer : ")
+                        inserting_list.append(Qs)
+                        Qs = input("Write the number of the right answer : ")
+                        inserting_list.append(Qs)
+                        query = "INSERT INTO Questions (Q_ID, Questions, Ans_1, Ans_2, Ans_3, Ans_4, Right_Ans) VALUES (%i, '%s', '%s', '%s', '%s', '%s', '%s')" % (IDS, inserting_list[0],inserting_list[1],inserting_list[2],inserting_list[3],inserting_list[4],inserting_list[5])
+                        conn.execute(query) # implements the query
+                        conn.commit()
+                        
+# Wecloming the user
+print ("\t\t\tWeclome to Python Helper Version 1")
+print ("\t\t\t  WRITTEN BY MUSHARRAF ALRUWAILL")
+print ("\t\t\t  INSTRUCTOR : GULA NURMATOVA")
+print ("\t\t\t                UNH          ")
+
+# -----------------------------------------
+End_App = False
+User_info = {}
+UC = User()
+User_info['User_name'] = ''
+User_info['Password'] = ''
+User_info['Name'] = ''
+User_info['Type'] = ''
+global User_choice 
+while(End_App == False):
+        
+        if(User_info['Type'] == '' ):
+                User_info = UC.Access()
+        if ( User_info['Type'] == "Admin" ):
+                print ("\n\nWhat Would like to do ", User_info['Name'], " ?")
+                print ("\n\t Admin privilege :")
+                print ("\t\t 1- Add new Question")
+                print ("\t\t 2- Delete Question")
+                print ("\t\t 3- Add new Function")
+                print ("\t\t 4- Delete Function")
+                print ("\t\t 5- Add new User")
+                print ("\t\t 6- Delete User")
+                print ("\t\t 7- alter privilege")
+        
+                print ("\n\t As a normal user access : ")
+                print ("\t\t 8- Search for function")
+                print ("\t\t 9- Quiz game")
+                print ("\t\t 10- Change Password")
+                print ("\t\t 11- Log out")
+                print ("\t\t 12- Quit")
+                User_choice = input("\n\n\t\twhat would you like to do :  ")
+                User_choice = int(User_choice)
+        elif ( User_info['Type'] == "User" ):
+                print ("\n\t",User_info['Name'], " have right to do : ")
+                print ("\t\t 1- Search for function")
+                print ("\t\t 2- Quiz game")
+                print ("\t\t 3- Change Password")
+                print ("\t\t 4- Log out")
+                print ("\t\t 5- Quit")
+                User_choice = input("\n\n\t\twhat would you like to do :  ")
+                User_choice = int(User_choice)
+        question_imp = question()
+        user_imp = User()
+        function_imp = functions()
+        
+        if ( User_info['Type'] == "Admin" and User_choice == 1):
+                question_imp.Add_Question()
+        elif  (User_info['Type'] == "Admin" and User_choice == 2):
+                question_imp.delete_Question()
+        elif  (User_info['Type'] == "Admin" and User_choice == 3):
+                function_imp.add_function()
+        elif  (User_info['Type'] == "Admin" and User_choice == 4):
+                function_imp.delete_Fun()
+        elif  (User_info['Type'] == "Admin" and User_choice == 5):
+                user_imp.Add_User()
+        elif  (User_info['Type'] == "Admin" and User_choice == 6):
+                user_imp.delete_user()
+        elif  (User_info['Type'] == "Admin" and User_choice == 7):
+                user_imp.privilege()
+        elif  (User_info['Type'] == "Admin" and User_choice == 8):
+                function_imp.Seraching()
+        elif  (User_info['Type'] == "Admin" and User_choice == 9):
+                question_imp.quiz()
+        elif  (User_info['Type'] == "Admin" and User_choice == 10):
+                MyID = User_info['ID']
+                print (MyID)
+                user_imp.Change_Password(MyID)
+        elif  (User_info['Type'] == "Admin" and User_choice == 11):
+                User_info['User_name'] = ''
+                User_info['Password'] = ''
+                User_info['Name'] = ''
+                User_info['Type'] = ''
+        elif  (User_info['Type'] == "Admin" and User_choice == 12):
+                End_App = True
+        elif  (User_info['Type'] == "User" and User_choice == 1):
+                function_imp.Seraching()
+        elif  (User_info['Type'] == "User" and User_choice == 2):
+                question_imp.quiz()
+        elif  (User_info['Type'] == "User" and User_choice == 3):
+                MyID = User_info['ID']
+                user_imp.Change_Password(MyID)
+        elif  (User_info['Type'] == "User" and User_choice == 4):
+                User_info['User_name'] = ''
+                User_info['Password'] = ''
+                User_info['Name'] = ''
+                User_info['Type'] = ''
+        elif  (User_info['Type'] == "User" and User_choice == 5):
+                 End_App = True
+        else:
+                print("\t\tYou should choose one of the shown options.")
+# Implementing the choice
+
+
+conn.close()
